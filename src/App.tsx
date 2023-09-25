@@ -2,17 +2,17 @@
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-// import getPlayers from './server/get-players';
-// import { TPlayer } from './server/types';
+import getPlayers from './server/get-players';
+import { TPlayer } from './server/types';
 
  function App() {
   
 
  
-  // const getPlayersFromData =  async () => { 
-  //   const players: TPlayer[] = await getPlayers();
-  //       return players;
-  //     }
+  const getPlayersFromData =  async () => { 
+    const players: TPlayer[] = await getPlayers();
+        return players;
+      }
 
 
   return (
@@ -28,7 +28,7 @@ import './App.css'
       <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() =>{ 
-         // console.log(getPlayersFromData())
+         console.log(getPlayersFromData())
           }}>
          List of players are in the logs
         </button>
