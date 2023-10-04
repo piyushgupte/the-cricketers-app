@@ -11,6 +11,9 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { TPlayer } from "../../../server/types";
 import './Styles.scss';
 import UnstyledInput from "../../Input";
+import { AppDispatch } from "../../../store";
+import { cricketerSliceType, updatePageSize } from "../../../store/cricketer-slice";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
 
 
@@ -18,18 +21,24 @@ type PlayersTableProps = {
     isLoading: boolean,
     error: unknown,
     data: TPlayer[] | undefined,
-    refetchPlayersInfo:  ()=>void,
+    refetchPlayersInfo: () => void,
+    state: cricketerSliceType,
+    updatePageSize: ActionCreatorWithPayload<cricketerSliceType, "cricketers/updatePageSize">,
+    updateFilter: ActionCreatorWithPayload<cricketerSliceType, "cricketers/updateFilter">,
+    updatePageNumber: ActionCreatorWithPayload<cricketerSliceType, "cricketers/updatePageNumber">,
+    updateSearchText: ActionCreatorWithPayload<any, "cricketers/updateSearchText">,
+    dispatch: AppDispatch
 }
 
-
-export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo }: PlayersTableProps) => {
-    const rows = data as TPlayer[];
+export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispatch, updateFilter, updatePageNumber, updateSearchText, state }: PlayersTableProps) => {
+    const { filter, pageNumber, pageSize, searchText } = state;
     if (isLoading) {
         return <div>Loading...</div>;
     }
     if (error || data === undefined) {
         return <div>Error: {error?.toString()}</div>;
     }
+    
     const calculateAge = (dobEpoch: number) => {
         // Get the current date in epoch time (in seconds)
         const currentDateEpoch = Math.floor(Date.now() / 1000);
@@ -42,6 +51,15 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo }: Pla
         const age = Math.floor(timeDiffMillis / millisecondsPerYear);
         return age;
     }
+    
+    const rows = data as TPlayer[];
+    console.log("data:",rows);
+
+    const minIndex = 0 + pageSize * (pageNumber -1);
+    const maxIndex = minIndex + pageSize;
+    const filteredRows = rows.slice(minIndex,maxIndex)
+    console.log("filtered data:",filteredRows);
+    const totalPages = Number(data.length % pageSize) === 0 ? Number(data.length / pageSize) : Math.trunc(Number(data.length / pageSize)) + 1;
 
     return (
         <div style={{ height: '70%', width: '100%' }}>
@@ -49,12 +67,12 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo }: Pla
                 Search by Player Type / Name
             </div>
             <div className="player-search">
-                <UnstyledInput/>
-                <IconButton onClick={(event)=>{
+                <UnstyledInput />
+                <IconButton onClick={(event) => {
                     event.stopPropagation();
                     refetchPlayersInfo();
-                    }}  aria-label="delete" className="player-refresh-btn">
-                    <RefreshIcon/>
+                }} aria-label="delete" className="player-refresh-btn">
+                    <RefreshIcon />
                 </IconButton>
             </div>
 
@@ -62,15 +80,15 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo }: Pla
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="center">Name<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small"/></TableCell>
-                            <TableCell align="center">Points<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small"/></TableCell>
-                            <TableCell align="center">Type<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small"/></TableCell>
-                            <TableCell align="center">Rank<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small"/></TableCell>
-                            <TableCell align="center">Age<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small"/></TableCell>
+                            <TableCell align="center">Name<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small" /></TableCell>
+                            <TableCell align="center">Points<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small" /></TableCell>
+                            <TableCell align="center">Type<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small" /></TableCell>
+                            <TableCell align="center">Rank<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small" /></TableCell>
+                            <TableCell align="center">Age<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small" /></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows?.map((row) => (
+                        {filteredRows?.map((row) => (
                             <TableRow key={row.name}>
                                 <TableCell align="center">{row.name}</TableCell>
                                 <TableCell align="center">{row.points}</TableCell>
@@ -82,27 +100,45 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo }: Pla
                         <TableRow key={'footer'} >
                             <TableCell colSpan={5}>
 
-                            <div className="player-tabel-footer" >
-                                <div>Rows per page:</div>
-                                <div>
-                                    <select id="pageSize" name="pageSize">
-                                        <option value="volvo">10</option>
-                                        <option value="saab">5</option>
-                                    </select>
+                                <div className="player-tabel-footer" >
+                                    <div className="mr1">Rows per page:</div>
+                                    <div>
+                                        <select id="pageSize" onChange={(e) => { dispatch(updatePageSize({ ...state, pageSize: Number(e.target.value) })) }} value={pageSize} name="pageSize">
+                                            <option value="10">10</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                    <IconButton onClick={(e)=>{
+                                        e.stopPropagation();
+                                       dispatch( updatePageNumber({...state, pageNumber: 1}))
+                                    }}  disabled={minIndex<=0} >
+                                        <SkipPreviousIcon />
+                                    </IconButton>
+                                    <IconButton onClick={(e)=>{
+                                        e.stopPropagation();
+                                       dispatch( updatePageNumber({...state, pageNumber: pageNumber - 1}))
+                                    }} disabled={minIndex<=0}>
+                                        <NavigateBeforeIcon />
+                                    </IconButton>
+                                    <span>{minIndex} - {maxIndex>rows.length?rows.length:maxIndex} of {rows.length}</span>
+                                    <IconButton onClick={(e)=>{
+                                        e.stopPropagation();
+                                       dispatch( updatePageNumber({...state, pageNumber: pageNumber +1}))
+                                    }}  disabled={pageNumber==totalPages}>
+                                        <NavigateNextIcon />
+                                    </IconButton>
+                                    <IconButton onClick={(e)=>{
+                                        e.stopPropagation();
+                                       dispatch( updatePageNumber({...state, pageNumber: totalPages}))
+                                    }} disabled={pageNumber==totalPages}>
+                                        <SkipNextIcon />
+                                    </IconButton>
                                 </div>
-                                
-                               <NavigateBeforeIcon/>
-                                <SkipPreviousIcon/>
-                                <span>page 1 of 1</span>
-                                <SkipNextIcon/>
-                                <NavigateNextIcon/>
-                            </div>
                             </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
             </TableContainer>
-
         </div>
     )
 

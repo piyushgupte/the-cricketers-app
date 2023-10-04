@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+import type { RootState } from './../store/index';
 
-type cricketerSliceType = {
+export type cricketerSliceType = {
   pageSize:number,
   filter:string,
   searchText:string,
+  pageNumber: number
 }
 
 type cricketerAction = {
@@ -15,9 +17,11 @@ type cricketerAction = {
 
 const initialState: cricketerSliceType = {
  
-  pageSize:10,
+  pageSize:5,
   filter:'',
-  searchText:''
+  searchText:'',
+  pageNumber: 1,
+  
 };
 
 export const cricketerSlice = createSlice({
@@ -25,7 +29,9 @@ export const cricketerSlice = createSlice({
   initialState,
   reducers: {
     updatePageSize: (state, action:cricketerAction) => {
+      
       state.pageSize = action.payload.pageSize;
+
     },
     updateFilter:(state, action:cricketerAction)=>{
       state.filter=action.payload.filter ;
@@ -33,7 +39,12 @@ export const cricketerSlice = createSlice({
     updateSearchText: (state,action)=>{
       state.searchText = action.payload.searchText;
       
+    },
+    updatePageNumber: (state, action:cricketerAction)=>{
+      state.pageNumber = action.payload.pageNumber
     }
   }
 }
 );
+
+export const { updateFilter, updatePageNumber, updatePageSize, updateSearchText } = cricketerSlice.actions;
