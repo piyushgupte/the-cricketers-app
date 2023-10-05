@@ -20,7 +20,7 @@ const initialState: cricketerSliceType = {
   pageSize:5,
   filter:'',
   searchText:'',
-  pageNumber: 1,
+  pageNumber: 0,
   
 };
 
