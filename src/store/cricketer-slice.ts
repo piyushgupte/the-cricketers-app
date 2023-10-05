@@ -22,6 +22,7 @@ const initialState: cricketerSliceType = {
   searchText:'',
   pageNumber: 0,
   
+  
 };
 
 export const cricketerSlice = createSlice({
@@ -31,6 +32,7 @@ export const cricketerSlice = createSlice({
     updatePageSize: (state, action:cricketerAction) => {
       
       state.pageSize = action.payload.pageSize;
+      
 
     },
     updateFilter:(state, action:cricketerAction)=>{

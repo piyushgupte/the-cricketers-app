@@ -138,6 +138,8 @@ type FilteredRowsInfo ={
                     e.preventDefault();
                     setfilteredRows( filterAndPaginatePlayers(rows, searchText, pageSize, pageNumber));
                    // dispatch(updateSearchText({ ...state, searchText: localSearchText }));
+                  // dispatch(updatePageNumber({...state,pageNumber:0}));
+
 
                 }} href="#outlined-buttons">
                     Search
@@ -182,7 +184,7 @@ type FilteredRowsInfo ={
                                     <div>
                                         <select id="pageSize" onChange={(e) => { 
                                             dispatch(updatePageSize({ ...state, pageSize: Number(e.target.value) })) 
-                                            setfilteredRows( filterAndPaginatePlayers(rows, searchText, pageSize, Number(e.target.value)));
+                                            setfilteredRows( filterAndPaginatePlayers(rows, searchText,  Number(e.target.value),pageNumber));
                                             }} value={pageSize} name="pageSize">
                                             <option value="10">10</option>
                                             <option value="5">5</option>
