@@ -15,6 +15,9 @@ import { AppDispatch } from "../../../store";
 import { cricketerSliceType, updatePageSize } from "../../../store/cricketer-slice";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { useState } from "react";
+import { Anchor, PlayerDrawer } from "./player-drawer";
+import { Link } from "react-router-dom";
+import { calculateAge } from "../../../util/util";
 
 
 
@@ -49,12 +52,16 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
 //     })
 //     return temp.length
 // })
+const [drState, setDrState] = useState(false);
+const [selectedPlayerId, setSelectedPlayerId] = useState('');
 
 type FilteredRowsInfo ={
     filterdPlayers: TPlayer[];
     totalFilteredPages: number;
 };
-    const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSize: number, pageNumber: number) => {
+const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSize: number, pageNumber: number) => {
+
+          
         // if (searchText.trim().length !== 0) {
         //     setCurrentPage(pageNumber);
         //     dispatch(updatePageNumber({ ...state, pageNumber: 0 }));
@@ -83,18 +90,18 @@ type FilteredRowsInfo ={
 
     const [filteredRows, setfilteredRows] = useState<FilteredRowsInfo>(filterAndPaginatePlayers(data, '', pageSize, pageNumber))
     
-    const calculateAge = (dobEpoch: number) => {
-        // Get the current date in epoch time (in seconds)
-        const currentDateEpoch = Math.floor(Date.now() / 1000);
-        // Convert the DOB epoch time to milliseconds
-        const dobMillis = dobEpoch;
-        // Calculate the time difference in milliseconds
-        const timeDiffMillis = currentDateEpoch * 1000 - dobMillis;
-        // Convert milliseconds to years
-        const millisecondsPerYear = 1000 * 60 * 60 * 24 * 365.25; // Account for leap years
-        const age = Math.floor(timeDiffMillis / millisecondsPerYear);
-        return age;
-    }
+    // const calculateAge = (dobEpoch: number) => {
+    //     // Get the current date in epoch time (in seconds)
+    //     const currentDateEpoch = Math.floor(Date.now() / 1000);
+    //     // Convert the DOB epoch time to milliseconds
+    //     const dobMillis = dobEpoch;
+    //     // Calculate the time difference in milliseconds
+    //     const timeDiffMillis = currentDateEpoch * 1000 - dobMillis;
+    //     // Convert milliseconds to years
+    //     const millisecondsPerYear = 1000 * 60 * 60 * 24 * 365.25; // Account for leap years
+    //     const age = Math.floor(timeDiffMillis / millisecondsPerYear);
+    //     return age;
+    // }
 
 
     const rows = data as TPlayer[];
@@ -166,7 +173,10 @@ type FilteredRowsInfo ={
                     <TableBody>
                         {filteredRows.filterdPlayers?.map((row) => (
                             <TableRow key={row.name}>
-                                <TableCell align="center">{row.name}</TableCell>
+                                <TableCell onClick={()=>{
+                                    setDrState(()=>true)
+                                    setSelectedPlayerId(()=>row.id||'')
+                                    }} align="center">{row.name}</TableCell>
                                 <TableCell align="center">{row.points}</TableCell>
                                 <TableCell align="center">{row.type}</TableCell>
                                 <TableCell align="center">{row.rank}</TableCell>
@@ -225,6 +235,9 @@ type FilteredRowsInfo ={
                     </TableBody>
                 </Table>
             </TableContainer>
+            {rows&&
+            <PlayerDrawer cricketers={rows} playerId={selectedPlayerId}  anchor={drState} onClose={setDrState} />
+            }
         </div>
     )
 

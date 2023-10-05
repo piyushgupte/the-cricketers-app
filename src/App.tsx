@@ -4,12 +4,23 @@ import { ThemeContext } from './contexts/theme-context';
 import Layout from './components/layout';
 
 import { QueryClientProvider,QueryClient} from 'react-query';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
 
 import './App.scss';
-import { PlayersTable } from './components/layout/player/player-table';
 import { PlayerTableContainer } from './components/layout/player/player-table-container';
 
-
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <PlayerTableContainer/>,
+    
+  }
+  
+]);
 function App() {
 
   const queryClient = new QueryClient()
@@ -33,7 +44,7 @@ return (
     <div className={`theme-${theme}`}>
       <Layout>
         <div className="content-wrapper">
-          <PlayerTableContainer/>
+        <RouterProvider router={router} />
         </div>
       </Layout>
     </div>

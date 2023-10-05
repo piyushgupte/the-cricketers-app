@@ -16,11 +16,15 @@
     "@mui/icons-material": "^5.14.9",
     "@mui/material": "^5.14.10",
     "@reduxjs/toolkit": "^1.9.6",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-query": "^3.39.3",
     "react-redux": "^8.1.2",
-    "sass": "^1.68.0"
+    "react-router-dom": "^6.16.0",
+    "sass": "^1.68.0",
+    "sort-by": "^1.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.6.5",

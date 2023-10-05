@@ -1,19 +1,73 @@
+@import '../../../styles/theme-variables.scss';
 .player-tabel-footer{
     display:flex;
     margin: 1rem !important;
     justify-content: end; 
     text-align: center;
     align-items: center;
+    @include themify($themes) {
+        background: themed('headerFooterBackground');
+        color: themed('textColor');
+      }
     
 }
 .player-search{
     margin: 1rem 0 1rem 0;
     display: flex;
+    @include themify($themes) {
+       // background: themed('headerFooterBackground');
+        color: themed('textColor');
+      }
 }
 
-div{
+table{
     font-size: 14px;
+    @include themify($themes) {
+        background: themed('headerFooterBackground');
+        color: themed('textColor');
+      }
 }
 .mr1{
     margin: 0.5rem;
+}
+.player-details-container{
+    margin-top: 0.5rem;
+   
+    @include themify($themes) {
+        background: themed('headerFooterBackground');
+        color: themed('textColor');
+      }
+    display: flex;
+    width:400px;
+    flex-direction: column;
+    justify-content:start;
+   
+}
+.row{
+    
+    .player-details-heading{
+        font-size: 16px;
+        font-weight:600;
+        margin: 0 0 1rem 1rem;
+    }
+
+    .player-details-subheading{
+        font-size: 14px;
+        font-weight:600;
+        margin: 0 0 0 1rem;
+    }
+    display: flex;
+    flex-direction: column;
+
+    .player-details-info{
+        font-size: 14px;
+        font-weight:400;
+        margin: 0 0 1rem 1rem;
+
+    }
+}
+.first-row{
+    display: flex;
+    width: 20px;
+
 }
