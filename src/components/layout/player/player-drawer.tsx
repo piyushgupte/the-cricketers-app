@@ -1,5 +1,4 @@
-import { Box, Button, Drawer, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
-import { cricketerSliceType } from "../../../store/cricketer-slice";
+import {  Drawer, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 import { TPlayer } from "../../../server/types";
 import { calculateAge } from "../../../util/util";
 import CloseIcon from '@mui/icons-material/Close';

@@ -1,49 +1,38 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import type { RootState } from './../store/index';
 
 export type PlayerFilter = "name_asc" | "name_dec" | "rank_asc" | "rank_dec" | "age_asc" | "age_dec" | ""
 export type cricketerSliceType = {
-  pageSize:number,
+  pageSize: number,
   filter: PlayerFilter,
-  searchText:string,
+  searchText: string,
   pageNumber: number
 }
 
-type cricketerAction = {
-  type: string,
-  payload: cricketerSliceType
-}
-
-
-
 const initialState: cricketerSliceType = {
- 
-  pageSize:5,
-  filter:'',
-  searchText:'',
+  pageSize: 5,
+  filter: '',
+  searchText: '',
   pageNumber: 0,
-  
-  
 };
 
 export const cricketerSlice = createSlice({
   name: 'cricketers',
   initialState,
   reducers: {
-    updatePageSize: (state, action:PayloadAction<cricketerSliceType>) => {
-      
+    updatePageSize: (state, action: PayloadAction<cricketerSliceType>) => {
+
       state.pageSize = action.payload.pageSize;
-      
+
 
     },
-    updateFilter:(state, action:PayloadAction<cricketerSliceType>)=>{
-      state.filter=action.payload.filter ;
+    updateFilter: (state, action: PayloadAction<cricketerSliceType>) => {
+      state.filter = action.payload.filter;
     },
-    updateSearchText: (state,action:PayloadAction<cricketerSliceType>)=>{
+    updateSearchText: (state, action: PayloadAction<cricketerSliceType>) => {
       state.searchText = action.payload.searchText;
-      
+
     },
-    updatePageNumber: (state, action:PayloadAction<cricketerSliceType>)=>{
+    updatePageNumber: (state, action: PayloadAction<cricketerSliceType>) => {
       state.pageNumber = action.payload.pageNumber
     }
   }

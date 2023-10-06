@@ -3,7 +3,7 @@ import { ThemeContext } from '../../contexts/theme-context';
 
 import logoIcon from './../../images/ball.png';
 import './styles.scss';
-import { FormControl, FormControlLabel, FormGroup, Switch } from '@mui/material';
+import { Switch } from '@mui/material';
 
 const Header: FC = () => {
     const { theme, setTheme } = useContext(ThemeContext);

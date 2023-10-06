@@ -5,17 +5,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { updatePageSize, updateFilter, updatePageNumber, updateSearchText } from './../../../store/cricketer-slice';
 
-export const PlayerTableContainer = (props: any) => {
+export const PlayerTableContainer = () => {
     const state = useSelector((state: RootState) => state.cricketers);
     const dispatch = useDispatch<AppDispatch>();
 
-    const { isLoading,isFetching, error, data, refetch } = useQuery({
+    const { isLoading, error, data, refetch } = useQuery({
         queryKey: ['repoData'],
         queryFn: async () => await getPlayers(),
     })
 
     return (
-        <PlayersTable {...props}
+        <PlayersTable
             refetchPlayersInfo={() => { refetch() }}
             isLoading={isLoading}
             error={error}

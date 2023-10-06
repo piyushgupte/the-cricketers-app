@@ -1,6 +1,16 @@
 
 
-import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { useState } from "react";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+
+import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import {  PlayerDrawer } from "./player-drawer";
+import Input from "../../Input";
+import { AppDispatch } from "../../../store";
+import { PlayerFilter, cricketerSliceType, updatePageSize } from "../../../store/cricketer-slice";
+
+import { TPlayer, TPlayerType } from "../../../server/types";
+
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -8,17 +18,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { TPlayer, TPlayerType } from "../../../server/types";
 import './Styles.scss';
-import Input from "../../Input";
-import { AppDispatch } from "../../../store";
-import { PlayerFilter, cricketerSliceType, updatePageSize } from "../../../store/cricketer-slice";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
-import { useState } from "react";
-import { Anchor, PlayerDrawer } from "./player-drawer";
-import { Link } from "react-router-dom";
-import { calculateAge } from "../../../util/util";
-
 
 
 type PlayersTableProps = {
@@ -33,9 +33,22 @@ type PlayersTableProps = {
     updateSearchText: ActionCreatorWithPayload<cricketerSliceType, "cricketers/updateSearchText">,
     dispatch: AppDispatch
 }
+type Player ={
+    id: string;
+    name: string;
+    description:string;
+    type:TPlayerType;
+    points:number;
+    rank:number;
+    dob:number;
+}
 
 export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispatch, updateFilter, updatePageNumber, updateSearchText, state }: PlayersTableProps) => {
+   
     const { filter, pageNumber, pageSize, searchText } = state;
+    const [drState, setDrState] = useState(false);
+    const [selectedPlayerId, setSelectedPlayerId] = useState('');
+
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -44,30 +57,8 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
     }
 
 
-    //     setTotalFilteredRows(()=>{
-    //         const temp = data.filter(player => {
-    //         const lowerFilterValue = searchText.toLowerCase();
-    //         return player?.name?.toLowerCase().includes(lowerFilterValue) || player?.type?.toLowerCase() === lowerFilterValue;
-    //     })
-    //     return temp.length
-    // })
-    const [drState, setDrState] = useState(false);
-    const [selectedPlayerId, setSelectedPlayerId] = useState('');
+  // function declarations
 
-    type FilteredRowsInfo = {
-        filterdPlayers: TPlayer[];
-        totalFilteredPages: number;
-    };
-
-    type Player ={
-        id: string;
-        name: string;
-        description:string;
-        type:TPlayerType;
-        points:number;
-        rank:number;
-        dob:number;
-    }
     const filterPlayers = (filterName:string,filterType:string,players: TPlayer[])=>{
         if( players){
             const tempPlayers = players as Player[]
@@ -89,12 +80,6 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
 
         const [filterName,filterType] = playerFilter?.split("_");
         const sortedArray = filterPlayers(filterName,filterType,array);
-        // if (searchText.trim().length !== 0) {
-        //     setCurrentPage(pageNumber);
-        //     dispatch(updatePageNumber({ ...state, pageNumber: 0 }));
-        // } else {
-        //     dispatch(updatePageNumber({ ...state, pageNumber: currentPage }))
-        // }
         if (filterValue.trim() === '') {
             // Return all elements if filterValue is an empty string
             const startIndex = (pageNumber) * pageSize;
@@ -102,50 +87,44 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
             //  setTotalFilteredRows(array.length);
             return { filterdPlayers: sortedArray.slice(startIndex, endIndex), totalFilteredPages: sortedArray.length }
         }
-
         const filteredPlayers = sortedArray.filter(player => {
             const lowerFilterValue = filterValue.toLowerCase();
-            return player?.name?.toLowerCase().includes(lowerFilterValue) || player?.type?.toLowerCase() === lowerFilterValue;
+           
+            return player?.name?.toLowerCase().includes(lowerFilterValue) || player?.type?.toLowerCase().includes(lowerFilterValue);
         });
-        // setTotalFilteredRows(filteredPlayers.length);
-
         const startIndex = (pageNumber) * pageSize;
         const endIndex = startIndex + pageSize;
 
         return { filterdPlayers: filteredPlayers.slice(startIndex, endIndex), totalFilteredPages: filteredPlayers.length }
     }
-
-    const [filteredRows, setfilteredRows] = useState<FilteredRowsInfo>(filterAndPaginatePlayers(data, '', pageSize, pageNumber,filter))
-
-
-    const rows = data as TPlayer[];
-    console.log("data:", rows);
-
-
-    //const filterdPlayers = filterAndPaginatePlayers(rows,searchText,pageSize,pageNumber);
-
-
+   
     const handleSearchTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value;
-        // if (input.trim().length !== 0) {
-        //     setCurrentPage(pageNumber);
-        //     dispatch(updatePageNumber({ ...state, pageNumber: 0 }));
-        // } else {
-        //     dispatch(updatePageNumber({ ...state, pageNumber: currentPage }))
-        // }
-        dispatch(updateSearchText({ ...state, searchText: input }));
-        // setLocalSearchText(e.target.value);
+       
+        dispatch(updateSearchText({ ...state,pageNumber:0, searchText: input }));
+        dispatch(updatePageNumber({ ...state,pageNumber:0 }));
+       
+    }
+    
+    const calculateAge = (dobEpoch: number) => {
+        // Get the current date in epoch time (in seconds)
+        const currentDateEpoch = Math.floor(Date.now() / 1000);
+        // Convert the DOB epoch time to milliseconds
+        const dobMillis = dobEpoch;
+        // Calculate the time difference in milliseconds
+        const timeDiffMillis = currentDateEpoch * 1000 - dobMillis;
+        // Convert milliseconds to years
+        const millisecondsPerYear = 1000 * 60 * 60 * 24 * 365.25; // Account for leap years
+        const age = Math.floor(timeDiffMillis / millisecondsPerYear);
+        return age;
     }
 
+    // local constants
 
-
-
-
+    const rows = data as TPlayer[];
+    const filteredRows = filterAndPaginatePlayers(rows,searchText,pageSize,pageNumber,filter);
     const minIndex = pageNumber * pageSize;
     const maxIndex = minIndex + pageSize;
-    // const filteredRows = rows.slice(minIndex,maxIndex)
-    //  setfilteredRows( filterAndPaginatePlayers(rows, '', pageSize, pageNumber));
-    console.log("filtered data:", filteredRows);
     const totalPages = Number(filteredRows.totalFilteredPages % pageSize) === 0 ? Number(filteredRows.totalFilteredPages / pageSize) : Math.trunc(Number(filteredRows.totalFilteredPages / pageSize));
 
     return (
@@ -155,16 +134,6 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
             </div>
             <div className="player-search">
                 <Input value={searchText} onChange={handleSearchTextChange} />
-                <Button variant="outlined" onClick={(e) => {
-                    e.preventDefault();
-                    setfilteredRows(filterAndPaginatePlayers(rows, searchText, pageSize, pageNumber,filter));
-                    // dispatch(updateSearchText({ ...state, searchText: localSearchText }));
-                    // dispatch(updatePageNumber({...state,pageNumber:0}));
-
-
-                }} href="#outlined-buttons">
-                    Apply filter
-                </Button>
                 <IconButton onClick={(event) => {
                     event.stopPropagation();
                     refetchPlayersInfo();
@@ -208,7 +177,6 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
                                     <div>
                                         <select id="pageSize" onChange={(e) => {
                                             dispatch(updatePageSize({ ...state, pageSize: Number(e.target.value) }))
-                                            setfilteredRows(filterAndPaginatePlayers(rows, searchText, Number(e.target.value), pageNumber,filter));
                                         }} value={pageSize} name="pageSize">
                                             <option value="10">10</option>
                                             <option value="5">5</option>
@@ -217,14 +185,12 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
                                     <IconButton onClick={(e) => {
                                         e.stopPropagation();
                                         dispatch(updatePageNumber({ ...state, pageNumber: 0 }))
-                                        setfilteredRows(filterAndPaginatePlayers(rows, searchText, pageSize, 0,filter));
                                     }} disabled={minIndex <= 0} >
                                         <SkipPreviousIcon />
                                     </IconButton>
                                     <IconButton onClick={(e) => {
                                         e.stopPropagation();
                                         dispatch(updatePageNumber({ ...state, pageNumber: pageNumber - 1 }))
-                                        setfilteredRows(filterAndPaginatePlayers(rows, searchText, pageSize, pageNumber - 1,filter));
                                     }} disabled={minIndex <= 0}>
                                         <NavigateBeforeIcon />
                                     </IconButton>
@@ -232,14 +198,12 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
                                     <IconButton onClick={(e) => {
                                         e.stopPropagation();
                                         dispatch(updatePageNumber({ ...state, pageNumber: pageNumber + 1 }))
-                                        setfilteredRows(filterAndPaginatePlayers(rows, searchText, pageSize, pageNumber + 1,filter));
                                     }} disabled={pageNumber == totalPages}>
                                         <NavigateNextIcon />
                                     </IconButton>
                                     <IconButton onClick={(e) => {
                                         e.stopPropagation();
                                         dispatch(updatePageNumber({ ...state, pageNumber: totalPages }))
-                                        setfilteredRows(filterAndPaginatePlayers(rows, searchText, pageSize, totalPages,filter));
                                     }} disabled={pageNumber == totalPages}>
                                         <SkipNextIcon />
                                     </IconButton>
