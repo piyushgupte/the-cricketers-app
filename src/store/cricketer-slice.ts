@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { RootState } from './../store/index';
 
+export type PlayerFilter = "name_asc" | "name_dec" | "rank_asc" | "rank_dec" | "age_asc" | "age_dec" | ""
 export type cricketerSliceType = {
   pageSize:number,
-  filter:string,
+  filter: PlayerFilter,
   searchText:string,
   pageNumber: number
 }

@@ -42,26 +42,25 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
     if (error || data === undefined) {
         return <div>Error: {error?.toString()}</div>;
     }
-    const [currentPage, setCurrentPage] = useState(0);
-    const [totalFilteredRows,setTotalFilteredRows] = useState(data.length);
 
-//     setTotalFilteredRows(()=>{
-//         const temp = data.filter(player => {
-//         const lowerFilterValue = searchText.toLowerCase();
-//         return player?.name?.toLowerCase().includes(lowerFilterValue) || player?.type?.toLowerCase() === lowerFilterValue;
-//     })
-//     return temp.length
-// })
-const [drState, setDrState] = useState(false);
-const [selectedPlayerId, setSelectedPlayerId] = useState('');
 
-type FilteredRowsInfo ={
-    filterdPlayers: TPlayer[];
-    totalFilteredPages: number;
-};
-const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSize: number, pageNumber: number) => {
+    //     setTotalFilteredRows(()=>{
+    //         const temp = data.filter(player => {
+    //         const lowerFilterValue = searchText.toLowerCase();
+    //         return player?.name?.toLowerCase().includes(lowerFilterValue) || player?.type?.toLowerCase() === lowerFilterValue;
+    //     })
+    //     return temp.length
+    // })
+    const [drState, setDrState] = useState(false);
+    const [selectedPlayerId, setSelectedPlayerId] = useState('');
 
-          
+    type FilteredRowsInfo = {
+        filterdPlayers: TPlayer[];
+        totalFilteredPages: number;
+    };
+    const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSize: number, pageNumber: number) => {
+
+
         // if (searchText.trim().length !== 0) {
         //     setCurrentPage(pageNumber);
         //     dispatch(updatePageNumber({ ...state, pageNumber: 0 }));
@@ -72,36 +71,23 @@ const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSiz
             // Return all elements if filterValue is an empty string
             const startIndex = (pageNumber) * pageSize;
             const endIndex = startIndex + pageSize;
-          //  setTotalFilteredRows(array.length);
-            return {filterdPlayers: array.slice(startIndex, endIndex), totalFilteredPages: array.length} 
+            //  setTotalFilteredRows(array.length);
+            return { filterdPlayers: array.slice(startIndex, endIndex), totalFilteredPages: array.length }
         }
 
         const filteredPlayers = array.filter(player => {
             const lowerFilterValue = filterValue.toLowerCase();
             return player?.name?.toLowerCase().includes(lowerFilterValue) || player?.type?.toLowerCase() === lowerFilterValue;
         });
-       // setTotalFilteredRows(filteredPlayers.length);
+        // setTotalFilteredRows(filteredPlayers.length);
 
         const startIndex = (pageNumber) * pageSize;
         const endIndex = startIndex + pageSize;
 
-        return {filterdPlayers: filteredPlayers.slice(startIndex, endIndex), totalFilteredPages:filteredPlayers.length} 
+        return { filterdPlayers: filteredPlayers.slice(startIndex, endIndex), totalFilteredPages: filteredPlayers.length }
     }
 
     const [filteredRows, setfilteredRows] = useState<FilteredRowsInfo>(filterAndPaginatePlayers(data, '', pageSize, pageNumber))
-    
-    // const calculateAge = (dobEpoch: number) => {
-    //     // Get the current date in epoch time (in seconds)
-    //     const currentDateEpoch = Math.floor(Date.now() / 1000);
-    //     // Convert the DOB epoch time to milliseconds
-    //     const dobMillis = dobEpoch;
-    //     // Calculate the time difference in milliseconds
-    //     const timeDiffMillis = currentDateEpoch * 1000 - dobMillis;
-    //     // Convert milliseconds to years
-    //     const millisecondsPerYear = 1000 * 60 * 60 * 24 * 365.25; // Account for leap years
-    //     const age = Math.floor(timeDiffMillis / millisecondsPerYear);
-    //     return age;
-    // }
 
 
     const rows = data as TPlayer[];
@@ -120,7 +106,7 @@ const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSiz
         //     dispatch(updatePageNumber({ ...state, pageNumber: currentPage }))
         // }
         dispatch(updateSearchText({ ...state, searchText: input }));
-       // setLocalSearchText(e.target.value);
+        // setLocalSearchText(e.target.value);
     }
 
 
@@ -130,7 +116,7 @@ const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSiz
     const minIndex = pageNumber * pageSize;
     const maxIndex = minIndex + pageSize;
     // const filteredRows = rows.slice(minIndex,maxIndex)
-   //  setfilteredRows( filterAndPaginatePlayers(rows, '', pageSize, pageNumber));
+    //  setfilteredRows( filterAndPaginatePlayers(rows, '', pageSize, pageNumber));
     console.log("filtered data:", filteredRows);
     const totalPages = Number(filteredRows.totalFilteredPages % pageSize) === 0 ? Number(filteredRows.totalFilteredPages / pageSize) : Math.trunc(Number(filteredRows.totalFilteredPages / pageSize));
 
@@ -140,12 +126,12 @@ const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSiz
                 Search by Player Type / Name
             </div>
             <div className="player-search">
-                <Input value={searchText}  onChange={handleSearchTextChange} />
-                <Button variant="outlined" onClick={(e)=>{
+                <Input value={searchText} onChange={handleSearchTextChange} />
+                <Button variant="outlined" onClick={(e) => {
                     e.preventDefault();
-                    setfilteredRows( filterAndPaginatePlayers(rows, searchText, pageSize, pageNumber));
-                   // dispatch(updateSearchText({ ...state, searchText: localSearchText }));
-                  // dispatch(updatePageNumber({...state,pageNumber:0}));
+                    setfilteredRows(filterAndPaginatePlayers(rows, searchText, pageSize, pageNumber));
+                    // dispatch(updateSearchText({ ...state, searchText: localSearchText }));
+                    // dispatch(updatePageNumber({...state,pageNumber:0}));
 
 
                 }} href="#outlined-buttons">
@@ -163,20 +149,20 @@ const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSiz
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="center">Name<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small" /></TableCell>
-                            <TableCell align="center">Points<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small" /></TableCell>
-                            <TableCell align="center">Type<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small" /></TableCell>
-                            <TableCell align="center">Rank<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small" /></TableCell>
-                            <TableCell align="center">Age<ArrowDropDownIcon fontSize="small" /><ArrowDropUpIcon fontSize="small" /></TableCell>
+                            <TableCell align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="name_asc"?"name_dec":"name_asc"}))}}>Name{filter==="name_dec"&&<ArrowDropDownIcon fontSize="small" />}{ filter==="name_asc" &&<ArrowDropUpIcon fontSize="small" />}</TableCell>
+                            <TableCell align="center">Points</TableCell>
+                            <TableCell align="center">Type</TableCell>
+                            <TableCell align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="rank_asc"?"rank_dec":"rank_asc"}))}}>Rank{filter==="rank_dec"&&<ArrowDropDownIcon fontSize="small" />}{filter==="rank_asc"&&<ArrowDropUpIcon fontSize="small" />}</TableCell>
+                            <TableCell align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="age_asc"?"age_dec":"age_asc"}))}}>Age {filter==="age_dec"&&<ArrowDropDownIcon fontSize="small" />}{filter==="age_asc"&&<ArrowDropUpIcon fontSize="small" />}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {filteredRows.filterdPlayers?.map((row) => (
                             <TableRow key={row.name}>
-                                <TableCell onClick={()=>{
-                                    setDrState(()=>true)
-                                    setSelectedPlayerId(()=>row.id||'')
-                                    }} align="center">{row.name}</TableCell>
+                                <TableCell onClick={() => {
+                                    setDrState(() => true)
+                                    setSelectedPlayerId(() => row.id || '')
+                                }} align="center">{row.name}</TableCell>
                                 <TableCell align="center">{row.points}</TableCell>
                                 <TableCell align="center">{row.type}</TableCell>
                                 <TableCell align="center">{row.rank}</TableCell>
@@ -192,10 +178,10 @@ const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSiz
                                     <div>current page:{pageNumber}</div>
                                     <div className="mr1">Rows per page:</div>
                                     <div>
-                                        <select id="pageSize" onChange={(e) => { 
-                                            dispatch(updatePageSize({ ...state, pageSize: Number(e.target.value) })) 
-                                            setfilteredRows( filterAndPaginatePlayers(rows, searchText,  Number(e.target.value),pageNumber));
-                                            }} value={pageSize} name="pageSize">
+                                        <select id="pageSize" onChange={(e) => {
+                                            dispatch(updatePageSize({ ...state, pageSize: Number(e.target.value) }))
+                                            setfilteredRows(filterAndPaginatePlayers(rows, searchText, Number(e.target.value), pageNumber));
+                                        }} value={pageSize} name="pageSize">
                                             <option value="10">10</option>
                                             <option value="5">5</option>
                                         </select>
@@ -203,14 +189,14 @@ const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSiz
                                     <IconButton onClick={(e) => {
                                         e.stopPropagation();
                                         dispatch(updatePageNumber({ ...state, pageNumber: 0 }))
-                                        setfilteredRows( filterAndPaginatePlayers(rows, searchText, pageSize, 0));
+                                        setfilteredRows(filterAndPaginatePlayers(rows, searchText, pageSize, 0));
                                     }} disabled={minIndex <= 0} >
                                         <SkipPreviousIcon />
                                     </IconButton>
                                     <IconButton onClick={(e) => {
                                         e.stopPropagation();
                                         dispatch(updatePageNumber({ ...state, pageNumber: pageNumber - 1 }))
-                                        setfilteredRows( filterAndPaginatePlayers(rows, searchText, pageSize, pageNumber -1));
+                                        setfilteredRows(filterAndPaginatePlayers(rows, searchText, pageSize, pageNumber - 1));
                                     }} disabled={minIndex <= 0}>
                                         <NavigateBeforeIcon />
                                     </IconButton>
@@ -218,14 +204,14 @@ const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSiz
                                     <IconButton onClick={(e) => {
                                         e.stopPropagation();
                                         dispatch(updatePageNumber({ ...state, pageNumber: pageNumber + 1 }))
-                                        setfilteredRows( filterAndPaginatePlayers(rows, searchText, pageSize, pageNumber +1));
+                                        setfilteredRows(filterAndPaginatePlayers(rows, searchText, pageSize, pageNumber + 1));
                                     }} disabled={pageNumber == totalPages}>
                                         <NavigateNextIcon />
                                     </IconButton>
                                     <IconButton onClick={(e) => {
                                         e.stopPropagation();
                                         dispatch(updatePageNumber({ ...state, pageNumber: totalPages }))
-                                        setfilteredRows( filterAndPaginatePlayers(rows, searchText, pageSize, totalPages));
+                                        setfilteredRows(filterAndPaginatePlayers(rows, searchText, pageSize, totalPages));
                                     }} disabled={pageNumber == totalPages}>
                                         <SkipNextIcon />
                                     </IconButton>
@@ -235,8 +221,8 @@ const filterAndPaginatePlayers = (array: TPlayer[], filterValue: string, pageSiz
                     </TableBody>
                 </Table>
             </TableContainer>
-            {rows&&
-            <PlayerDrawer cricketers={rows} playerId={selectedPlayerId}  anchor={drState} onClose={setDrState} />
+            {rows &&
+                <PlayerDrawer cricketers={rows} playerId={selectedPlayerId} anchor={drState} onClose={setDrState} />
             }
         </div>
     )
