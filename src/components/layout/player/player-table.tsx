@@ -31,6 +31,7 @@ type PlayersTableProps = {
     updateFilter: ActionCreatorWithPayload<cricketerSliceType, "cricketers/updateFilter">,
     updatePageNumber: ActionCreatorWithPayload<cricketerSliceType, "cricketers/updatePageNumber">,
     updateSearchText: ActionCreatorWithPayload<cricketerSliceType, "cricketers/updateSearchText">,
+    updateDrState : ActionCreatorWithPayload<cricketerSliceType, "cricketers/updateDrState">,
     dispatch: AppDispatch
 }
 type Player ={
@@ -43,11 +44,11 @@ type Player ={
     dob:number;
 }
 
-export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispatch, updateFilter, updatePageNumber, updateSearchText, state }: PlayersTableProps) => {
+export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispatch, updateFilter, updatePageNumber, updateSearchText,updateDrState, state }: PlayersTableProps) => {
    
-    const { filter, pageNumber, pageSize, searchText } = state;
+    const { filter, pageNumber, pageSize, searchText, isDrOpen } = state;
     const [drState, setDrState] = useState(false);
-    const [selectedPlayerId, setSelectedPlayerId] = useState('');
+    const [selectedPlayerId, setSelectedPlayerId] = useState('_1');
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -146,19 +147,20 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="name_asc"?"name_dec":"name_asc"}))}}>Name{filter==="name_dec"&&<ArrowDropDownIcon fontSize="small" />}{ filter==="name_asc" &&<ArrowDropUpIcon fontSize="small" />}</TableCell>
+                            <TableCell className="tabel-cell" align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="name_asc"?"name_dec":"name_asc"}))}}>Name{filter==="name_dec"&&<ArrowDropDownIcon fontSize="small" />}{ filter==="name_asc" &&<ArrowDropUpIcon fontSize="small" />}</TableCell>
                             <TableCell align="center">Points</TableCell>
                             <TableCell align="center">Type</TableCell>
-                            <TableCell align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="rank_asc"?"rank_dec":"rank_asc"}))}}>Rank{filter==="rank_dec"&&<ArrowDropDownIcon fontSize="small" />}{filter==="rank_asc"&&<ArrowDropUpIcon fontSize="small" />}</TableCell>
-                            <TableCell align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="age_asc"?"age_dec":"age_asc"}))}}>Age {filter==="age_dec"&&<ArrowDropDownIcon fontSize="small" />}{filter==="age_asc"&&<ArrowDropUpIcon fontSize="small" />}</TableCell>
+                            <TableCell className="tabel-cell" align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="rank_asc"?"rank_dec":"rank_asc"}))}}>Rank{filter==="rank_dec"&&<ArrowDropDownIcon fontSize="small" />}{filter==="rank_asc"&&<ArrowDropUpIcon fontSize="small" />}</TableCell>
+                            <TableCell className="tabel-cell" align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="age_asc"?"age_dec":"age_asc"}))}}>Age {filter==="age_dec"&&<ArrowDropDownIcon fontSize="small" />}{filter==="age_asc"&&<ArrowDropUpIcon fontSize="small" />}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {filteredRows.filterdPlayers?.map((row) => (
                             <TableRow key={row.name}>
                                 <TableCell onClick={() => {
-                                    setDrState(() => true)
+                                   // setDrState(() => true)
                                     setSelectedPlayerId(() => row.id || '')
+                                    dispatch( updateDrState({...state,isDrOpen:true}))
                                 }} align="center">{row.name}</TableCell>
                                 <TableCell align="center">{row.points}</TableCell>
                                 <TableCell align="center">{row.type}</TableCell>
@@ -214,7 +216,7 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
                 </Table>
             </TableContainer>
             {rows &&
-                <PlayerDrawer cricketers={rows} playerId={selectedPlayerId} anchor={drState} onClose={setDrState} />
+                <PlayerDrawer cricketers={rows} playerId={selectedPlayerId} anchor={isDrOpen} onClose={()=>{dispatch( updateDrState({...state,isDrOpen:false}))}} />
             }
         </div>
     )

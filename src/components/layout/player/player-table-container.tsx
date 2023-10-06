@@ -3,7 +3,7 @@ import getPlayers from "../../../server/get-players";
 import { PlayersTable } from "./player-table";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
-import { updatePageSize, updateFilter, updatePageNumber, updateSearchText } from './../../../store/cricketer-slice';
+import { updatePageSize, updateFilter, updatePageNumber, updateSearchText, updateDrState } from './../../../store/cricketer-slice';
 
 export const PlayerTableContainer = () => {
     const state = useSelector((state: RootState) => state.cricketers);
@@ -26,6 +26,7 @@ export const PlayerTableContainer = () => {
             updateFilter={updateFilter}
             updatePageNumber={updatePageNumber}
             updateSearchText={updateSearchText}
+            updateDrState={updateDrState}
            
 
         />

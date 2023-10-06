@@ -1,18 +1,20 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-export type PlayerFilter = "name_asc" | "name_dec" | "rank_asc" | "rank_dec" | "age_asc" | "age_dec" | ""
+export type PlayerFilter = "name_asc" | "name_dec" | "rank_asc" | "rank_dec" | "age_asc" | "age_dec" 
 export type cricketerSliceType = {
   pageSize: number,
   filter: PlayerFilter,
   searchText: string,
   pageNumber: number
+  isDrOpen:boolean
 }
 
 const initialState: cricketerSliceType = {
   pageSize: 5,
-  filter: '',
+  filter: 'name_asc',
   searchText: '',
   pageNumber: 0,
+  isDrOpen:false
 };
 
 export const cricketerSlice = createSlice({
@@ -34,9 +36,12 @@ export const cricketerSlice = createSlice({
     },
     updatePageNumber: (state, action: PayloadAction<cricketerSliceType>) => {
       state.pageNumber = action.payload.pageNumber
+    },
+    updateDrState: (state,action:PayloadAction<cricketerSliceType>)=>{
+      state.isDrOpen = action.payload.isDrOpen
     }
   }
 }
 );
 
-export const { updateFilter, updatePageNumber, updatePageSize, updateSearchText } = cricketerSlice.actions;
+export const { updateFilter, updatePageNumber, updatePageSize, updateSearchText,updateDrState } = cricketerSlice.actions;
