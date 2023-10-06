@@ -9,6 +9,7 @@
   @include themify($themes) {
     background: themed('headerFooterBackground');
   }
+  
   .header-content {
     max-width: 1200px;
     margin: 0 auto;
@@ -54,6 +55,18 @@
 .layout-wrapper {
   @include themify($themes) {
     background: themed('bodyBackgroundColor');
+  }
+}
+
+td,th{
+  @include themify($themes) {
+    color: themed('textColor');
+  }
+}
+
+.player-table-serch-lable{
+  @include themify($themes) {
+    color: themed('textColor');
   }
 }
 

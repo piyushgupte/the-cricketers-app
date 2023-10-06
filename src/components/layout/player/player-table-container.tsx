@@ -9,7 +9,7 @@ export const PlayerTableContainer = (props: any) => {
     const state = useSelector((state: RootState) => state.cricketers);
     const dispatch = useDispatch<AppDispatch>();
 
-    const { isFetching, error, data, refetch } = useQuery({
+    const { isLoading,isFetching, error, data, refetch } = useQuery({
         queryKey: ['repoData'],
         queryFn: async () => await getPlayers(),
     })
@@ -17,7 +17,7 @@ export const PlayerTableContainer = (props: any) => {
     return (
         <PlayersTable {...props}
             refetchPlayersInfo={() => { refetch() }}
-            isLoading={isFetching}
+            isLoading={isLoading}
             error={error}
             data={data}
             state={state}
@@ -26,6 +26,7 @@ export const PlayerTableContainer = (props: any) => {
             updateFilter={updateFilter}
             updatePageNumber={updatePageNumber}
             updateSearchText={updateSearchText}
+           
 
         />
     )

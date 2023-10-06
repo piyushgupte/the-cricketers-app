@@ -44,7 +44,10 @@ table{
    
 }
 .row{
-    
+    @include themify($themes) {
+        background: themed('headerFooterBackground');
+        color: themed('textColor');
+      }
     .player-details-heading{
         font-size: 16px;
         font-weight:600;
@@ -55,6 +58,7 @@ table{
         font-size: 14px;
         font-weight:600;
         margin: 0 0 0 1rem;
+        
     }
     display: flex;
     flex-direction: column;

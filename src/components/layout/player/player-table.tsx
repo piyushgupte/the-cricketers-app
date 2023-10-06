@@ -150,7 +150,7 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
 
     return (
         <div style={{ height: '70%', width: '100%' }}>
-            <div>
+            <div className="player-table-serch-lable">
                 Search by Player Type / Name
             </div>
             <div className="player-search">

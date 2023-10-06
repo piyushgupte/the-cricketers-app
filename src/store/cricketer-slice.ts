@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import type { RootState } from './../store/index';
 
 export type PlayerFilter = "name_asc" | "name_dec" | "rank_asc" | "rank_dec" | "age_asc" | "age_dec" | ""
@@ -30,20 +30,20 @@ export const cricketerSlice = createSlice({
   name: 'cricketers',
   initialState,
   reducers: {
-    updatePageSize: (state, action:cricketerAction) => {
+    updatePageSize: (state, action:PayloadAction<cricketerSliceType>) => {
       
       state.pageSize = action.payload.pageSize;
       
 
     },
-    updateFilter:(state, action:cricketerAction)=>{
+    updateFilter:(state, action:PayloadAction<cricketerSliceType>)=>{
       state.filter=action.payload.filter ;
     },
-    updateSearchText: (state,action)=>{
+    updateSearchText: (state,action:PayloadAction<cricketerSliceType>)=>{
       state.searchText = action.payload.searchText;
       
     },
-    updatePageNumber: (state, action:cricketerAction)=>{
+    updatePageNumber: (state, action:PayloadAction<cricketerSliceType>)=>{
       state.pageNumber = action.payload.pageNumber
     }
   }
