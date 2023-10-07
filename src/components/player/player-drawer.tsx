@@ -1,6 +1,6 @@
 import {  Drawer, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
-import { TPlayer } from "../../../server/types";
-import { calculateAge } from "../../../util/util";
+import { TPlayer } from "../../server/types";
+import { calculateAge } from "../../util/util";
 import CloseIcon from '@mui/icons-material/Close';
 
 export type Anchor = 'top' | 'left' | 'bottom' | 'right';

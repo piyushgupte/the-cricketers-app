@@ -11,7 +11,7 @@ import {
 
 
 import './App.scss';
-import { PlayerTableContainer } from './components/layout/player/player-table-container';
+import { PlayerTableContainer } from './components/player/player-table-container';
 
 const router = createBrowserRouter([
   {

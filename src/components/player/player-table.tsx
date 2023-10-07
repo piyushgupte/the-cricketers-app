@@ -5,11 +5,11 @@ import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
 import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import {  PlayerDrawer } from "./player-drawer";
-import Input from "../../Input";
-import { AppDispatch } from "../../../store";
-import { PlayerFilter, cricketerSliceType, updatePageSize } from "../../../store/cricketer-slice";
+import Input from "../Input";
+import { AppDispatch } from "../../store";
+import { PlayerFilter, cricketerSliceType, updatePageSize } from "../../store/cricketer-slice";
 
-import { TPlayer, TPlayerType } from "../../../server/types";
+import { TPlayer, TPlayerType } from "../../server/types";
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -47,7 +47,6 @@ type Player ={
 export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispatch, updateFilter, updatePageNumber, updateSearchText,updateDrState, state }: PlayersTableProps) => {
    
     const { filter, pageNumber, pageSize, searchText, isDrOpen } = state;
-    const [drState, setDrState] = useState(false);
     const [selectedPlayerId, setSelectedPlayerId] = useState('_1');
 
     if (isLoading) {
@@ -64,7 +63,7 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
         if( players){
             const tempPlayers = players as Player[]
 
-           return tempPlayers.slice().sort((a , b) => {
+           return  tempPlayers.slice().sort((a , b) => {
                 if (filterName === "name") {
                     return filterType === "asc" ? a.name.localeCompare(b.name) : b?.name?.localeCompare(a.name);
                 } else if (filterName === "age") {
@@ -147,7 +146,7 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <TableCell className="tabel-cell" align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="name_asc"?"name_dec":"name_asc"}))}}>Name{filter==="name_dec"&&<ArrowDropDownIcon fontSize="small" />}{ filter==="name_asc" &&<ArrowDropUpIcon fontSize="small" />}</TableCell>
+                            <TableCell className="tabel-cell" align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="name_asc"?"name_dec":"name_asc"}))}}>Name{filter==="name_dec"&&<ArrowDropDownIcon data-testid="name_dec" fontSize="small" />}{ filter==="name_asc" &&<ArrowDropUpIcon data-testid="name_asc" fontSize="small" />}</TableCell>
                             <TableCell align="center">Points</TableCell>
                             <TableCell align="center">Type</TableCell>
                             <TableCell className="tabel-cell" align="center" onClick={()=>{dispatch(updateFilter({...state,filter:filter==="rank_asc"?"rank_dec":"rank_asc"}))}}>Rank{filter==="rank_dec"&&<ArrowDropDownIcon fontSize="small" />}{filter==="rank_asc"&&<ArrowDropUpIcon fontSize="small" />}</TableCell>
@@ -157,7 +156,7 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
                     <TableBody>
                         {filteredRows.filterdPlayers?.map((row) => (
                             <TableRow key={row.name}>
-                                <TableCell onClick={() => {
+                                <TableCell className="tabel-cell" onClick={() => {
                                    // setDrState(() => true)
                                     setSelectedPlayerId(() => row.id || '')
                                     dispatch( updateDrState({...state,isDrOpen:true}))
