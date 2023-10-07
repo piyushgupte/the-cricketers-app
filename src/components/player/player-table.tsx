@@ -171,9 +171,6 @@ export const PlayersTable = ({ isLoading, error, data, refetchPlayersInfo, dispa
                             <TableCell colSpan={5}>
 
                                 <div className="player-tabel-footer" >
-                                    <div>Total records: {rows.length}</div>
-                                    <div>Total pages:{totalPages}</div>
-                                    <div>current page:{pageNumber}</div>
                                     <div className="mr1">Rows per page:</div>
                                     <div>
                                         <select id="pageSize" onChange={(e) => {

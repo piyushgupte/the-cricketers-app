@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 
 import { updatePageSize, updateFilter, updatePageNumber, updateSearchText, updateDrState, cricketerSliceType } from './../store/cricketer-slice';
 import { PlayersTable } from '../components/player/player-table';
-import { getPlayersData } from '../util/players-query';
+import { usePlayersQuery } from '../util/players-query';
 import { TPlayer } from '../server/types';
 
 describe('Player table container', () => {
@@ -174,7 +174,7 @@ describe('Player table container', () => {
     };
     it('should render player table on success', () => {
 
-        const { isLoading, error, refetch } = getPlayersData()
+        const { isLoading, error, refetch } = usePlayersQuery()
 
 
 
@@ -205,7 +205,7 @@ describe('Player table container', () => {
 
     it('should render Error on screen', () => {
 
-        const { error, refetch } = getPlayersData()
+        const { error, refetch } = usePlayersQuery()
 
 
 
@@ -233,7 +233,7 @@ describe('Player table container', () => {
 
     it('should render Error on screen', () => {
 
-        const { error, refetch } = getPlayersData()
+        const { error, refetch } = usePlayersQuery()
 
 
 
